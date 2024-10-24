@@ -1,0 +1,16 @@
+.navbar{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px ;
+
+    .middle{
+        display: flex;
+        gap: 30px;
+        margin-top: 20px;
+    }
+
+    .right{
+        margin-top: 15px;
+        display: flex;
+    }
+}

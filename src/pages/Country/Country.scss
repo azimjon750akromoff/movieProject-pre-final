@@ -1,0 +1,47 @@
+.country {
+    position: absolute; // Make the countries box appear over other elements
+    top: 60px; // Adjust based on your navbar's height
+    left: 50%;
+    transform: translateX(-90%); // Center it horizontally
+    width: 300px;
+    background-color: #1f2129;
+    border-radius: 10px;
+    padding: 10px; // Reduced padding for lower height
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000; // Ensure it appears above other elements
+  
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      color: white;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+  
+    ul {
+      list-style: none;
+      padding: 0;
+      display: grid; // Use grid for two-column layout
+      grid-template-columns: repeat(2, 1fr); // Create two equal columns
+      gap: 5px; // Add some space between items
+  
+      li {
+        padding: 10px;
+        border-bottom: 1px solid #333;
+  
+        &:hover {
+          background-color: #333;
+        }
+  
+        a {
+          color: #1de783; // Keep the original color
+          text-decoration: none;
+          font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  
+          &:hover {
+            color: #ffcc00;
+          }
+        }
+      }
+    }
+  }
+  
