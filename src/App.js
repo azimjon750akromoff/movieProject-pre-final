@@ -12,6 +12,7 @@ import MovieInner from "./pages/MovieInner/MovieInner";
 import GenreInner from "./pages/GenreInner/GenreInner";
 import CountryInner from "./pages/CountryInner/CountryInner";
 import SearchResults from "./pages/Search/SearchResults";
+import ActorMovies from "./pages/ActorMovies/ActorMovies";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
         <Routes>
           <Route path="/movies" element={<Movies />} />
           <Route path="/movie/:id" element={<MovieInner />} />
+          <Route path="/actor/:actorId/movies" element={<ActorMovies />} />
         </Routes>
 
         <Routes>

@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import "../MovieInner/MovieInner.scss";
 import { Rating } from "@mui/material";
 
@@ -8,10 +8,12 @@ function MovieInner() {
   const { id } = useParams();
   const [data, setData] = useState({});
   const [trailer, setTrailer] = useState(null);
-  const [director, setDirector] = useState(null); // State for director
-  const [cast, setCast] = useState([]); // State for cast
-  const [showAllCast, setShowAllCast] = useState(false); // State to show more cast members
+  const [director, setDirector] = useState(null);
+  const [cast, setCast] = useState([]);
+  const [similarMovies, setSimilarMovies] = useState([]);
+  const [showAllCast, setShowAllCast] = useState(false);
   const genreNames = data?.genres?.map((genre) => genre.name) || [];
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,7 +32,7 @@ function MovieInner() {
           (member) => member.job === "Director"
         );
         setDirector(directorData ? directorData.name : "N/A");
-        setCast(creditsResponse.data.cast); // Set cast data
+        setCast(creditsResponse.data.cast);
 
         // Fetch movie trailer
         const trailerResponse = await axios.get(
@@ -41,6 +43,12 @@ function MovieInner() {
           (video) => video.site === "YouTube" && video.type === "Trailer"
         );
         setTrailer(youtubeTrailer ? youtubeTrailer.key : null);
+
+        // Fetch similar movies
+        const similarMoviesResponse = await axios.get(
+          `https://api.themoviedb.org/3/movie/${id}/similar?api_key=0c43f3a99dd87115bcb9db112a118c03`
+        );
+        setSimilarMovies(similarMoviesResponse.data.results);
       } catch (error) {
         console.log("Error fetching data:", error);
       }
@@ -49,14 +57,15 @@ function MovieInner() {
     fetchData();
   }, [id]);
 
-  // Function to toggle show more cast members
+  const handleActorClick = (actorId) => {
+    navigate(`/actor/${actorId}/movies`);
+  };
+
   const toggleShowMore = () => {
     setShowAllCast(!showAllCast);
   };
 
-  // Get the year of production from the release date
   const releaseYear = data?.release_date ? new Date(data.release_date).getFullYear() : "N/A";
-  // Get the movie duration
   const runtime = data?.runtime ? `${data.runtime} minutes` : "N/A";
 
   return (
@@ -67,7 +76,7 @@ function MovieInner() {
           backgroundImage: `url(https://image.tmdb.org/t/p/w500${data?.backdrop_path})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          minHeight: "100vh", // Adjust as needed
+          minHeight: "100vh",
         }}
       >
         <div className="left">
@@ -81,36 +90,48 @@ function MovieInner() {
           <div className="info">
             <h1>{data?.title}</h1>
             <Rating
-            name="movie-rating"
-            value={data?.vote_average / 2} // Adjust for a 5-star rating
-            precision={0.5}
-            readOnly
-          />
+              name="movie-rating"
+              value={data?.vote_average / 2}
+              precision={0.5}
+              readOnly
+            />
             <p>
               {data?.vote_average} from {data?.vote_count}
-              <p><b>Year of Production:</b> {releaseYear}</p> {/* Display year of production */}
-            <p><b>Duration:</b> {runtime}</p> {/* Display movie duration */}
+              <p><b>Year of Production:</b> {releaseYear}</p>
+              <p><b>Duration:</b> {runtime}</p>
             </p>
-           
             <p><b>Watch {data?.title} on Hulu.</b> {data?.overview}</p>
-            <p><b>Genre: </b>{genreNames.join(", ")}</p> {/* Display genres */}
+            <p><b>Genre: </b>{genreNames.join(", ")}</p>
             <p><b>Country:</b> {data?.production_countries?.map(country => country.name).join(", ") || " N/A"}</p>
-            <p><b>Director:</b> {director || "N/A"}</p> {/* Display director */}
-            <p><b>Cast:</b> 
+            <p><b>Director:</b> {director || "N/A"}</p>
+            <p><b>Cast:</b></p>
+            <div className="cast-cards">
               {cast.length > 0 ? (
-                <>
-                  {cast.slice(0, showAllCast ? cast.length : 4).map((member) => (
-                    <span key={member.id}>{member.name}, </span>
-                  )).slice(0, 9)} {/* Remove the last comma */}
-                  {!showAllCast && cast.length > 5 && (
-                    <button onClick={toggleShowMore}>View More</button>
-                  )}
-                  {showAllCast && (
-                    <button onClick={toggleShowMore}>View Less</button>
-                  )}
-                </>
-              ) : " N/A"}
-            </p>
+                cast.slice(0, showAllCast ? cast.length : 4).map((member) => (
+                  <div
+                    key={member.id}
+                    className="cast-card"
+                    onClick={() => handleActorClick(member.id)}
+                  >
+                    <img
+                      src={member.profile_path
+                        ? `https://image.tmdb.org/t/p/w200${member.profile_path}`
+                        : "https://via.placeholder.com/150"}
+                      alt={member.name}
+                    />
+                    <p>{member.name}</p>
+                  </div>
+                ))
+              ) : (
+                <p>N/A</p>
+              )}
+              {!showAllCast && cast.length > 4 && (
+                <button onClick={toggleShowMore}>View More</button>
+              )}
+              {showAllCast && (
+                <button onClick={toggleShowMore}>View Less</button>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -130,6 +151,26 @@ function MovieInner() {
             ></iframe>
           </div>
         )}
+      </div>
+
+      {/* Similar Movies Section */}
+      <div className="similar-movies">
+        <h2>Similar Movies</h2>
+        <div className="similar-movie-cards">
+          {similarMovies.length > 0 ? (
+            similarMovies.slice(0, 6).map((movie) => (
+              <div key={movie.id} className="similar-movie-card" onClick={() => navigate(`/movie/${movie.id}`)}>
+                <img
+                  src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
+                  alt={movie.title}
+                />
+                <p>{movie.title}</p>
+              </div>
+            ))
+          ) : (
+            <p>No similar movies found.</p>
+          )}
+        </div>
       </div>
     </>
   );
