@@ -19,7 +19,6 @@ function App() {
     <div className="App">
       <Router>
         <Navbar />
-        {/* nimadir comment */}
         <Routes>
           <Route path="/" element={<Zeropage />} />
           <Route path="/search" element={<SearchResults />} />
