@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import "../ActorMovies/ActorMovies.scss";
+import { Pagination } from "@mui/material";
 
 function ActorMovies() {
   const { actorId } = useParams();

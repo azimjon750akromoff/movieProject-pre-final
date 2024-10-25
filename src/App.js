@@ -1,5 +1,5 @@
 import Navbar from "./components/Navbar/Navbar";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home/Home";
 import Genres from "./pages/Genres/Genres";
 import Country from "./pages/Country/Country";
@@ -15,7 +15,7 @@ import SearchResults from "./pages/Search/SearchResults";
 import ActorMovies from "./pages/ActorMovies/ActorMovies";
 
 function App() {
-  
+
   return (
     <div className="App">
       <Router>
