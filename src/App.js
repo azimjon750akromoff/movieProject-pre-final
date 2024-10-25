@@ -15,6 +15,7 @@ import SearchResults from "./pages/Search/SearchResults";
 import ActorMovies from "./pages/ActorMovies/ActorMovies";
 
 function App() {
+  
   return (
     <div className="App">
       <Router>
