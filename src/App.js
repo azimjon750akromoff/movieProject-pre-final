@@ -20,7 +20,7 @@ function App() {
       <Router>
         <Navbar />
         <Routes>
-          <Route path="/" element={<Zeropage />} />
+          <Route path="/home" element={<Zeropage />} />
           <Route path="/search" element={<SearchResults />} />
         </Routes>
         <Routes>
